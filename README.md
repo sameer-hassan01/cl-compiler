@@ -1,5 +1,9 @@
 # CL Compiler &nbsp; <sub><sup>JavaCC · JJTree · JavaFX</sup></sub>
 
+[![build](https://github.com/sameer-hassan01/cl-compiler/actions/workflows/ci.yml/badge.svg)](https://github.com/sameer-hassan01/cl-compiler/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Java 17+](https://img.shields.io/badge/java-17%2B-orange.svg)](#quick-start)
+
 A from-scratch compiler front end and three-address-code generator for the
 Classroom Language (CL), shipped with a JavaFX playground that lets you watch
 the source flow through every phase live -- tokens, AST, symbol table,
