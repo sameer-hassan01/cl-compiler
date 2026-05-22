@@ -1,0 +1,269 @@
+/* -----------------------------------------------------------
+   CL.jjt   -   grammar + scanner for the Classroom Language
+   CSC323 Compiler Construction project (Spring 2026)
+   ----------------------------------------------------------- */
+
+options {
+    MULTI             = true;
+    NODE_DEFAULT_VOID = true;
+    NODE_PACKAGE      = "cl";
+    STATIC            = false;
+    TRACK_TOKENS      = true;
+}
+
+PARSER_BEGIN(CLParser)
+package cl;
+
+/**
+ * Parser + lexer for the Classroom Language (CL).
+ *
+ * Generated automatically by jjtree + javacc from CL.jjt at build
+ * time. Callers should not run this class directly; use
+ * {@link CLCompiler} instead, which orchestrates the parser, the
+ * semantic analyser and the intermediate code generator and returns
+ * a structured {@link CompileResult}.
+ */
+public class CLParser { }
+PARSER_END(CLParser)
+
+
+/* ---------- whitespace + comments ---------- */
+SKIP : { " " | "\t" | "\n" | "\r" }
+SKIP : { <"//" (~["\n","\r"])*> }
+
+
+/* ---------- keywords (must appear before IDENT) ---------- */
+TOKEN : {
+    < T_START      : "startProgram" >
+  | < T_END        : "endProgram"   >
+  | < T_VARS       : "variables"    >
+  | < T_CODE       : "code"         >
+  | < T_INT        : "int"          >
+  | < T_FLOAT_T    : "float"        >
+  | < T_STR_T      : "string"       >
+  | < T_CHAR_T     : "char"         >
+  | < T_LOOPIF     : "loopif"       >
+  | < T_HOLDS      : "holds"        >
+  | < T_ENDLOOP    : "endloop"      >
+  | < T_SWITCH     : "switchFor"    >
+  | < T_CASE       : "case"         >
+  | < T_OTHER      : "other"        >
+  | < T_ENDSWITCH  : "endswitchFor" >
+  | < T_OUTSTRING  : "outString"    >
+}
+
+
+/* ---------- literals + identifier ---------- */
+TOKEN : {
+    < FLOATING : (["0"-"9"])+ "." (["0"-"9"])+ >
+  | < INTEGER  : (["0"-"9"])+ >
+  | < CHARLIT  : "'" ( ~["'","\\","\n","\r"] | "\\" ~["\n","\r"] ) "'" >
+  | < STRLIT   : "\"" ( ~["\"","\\","\n","\r"] | "\\" ~["\n","\r"] )* "\"" >
+  | < IDENT    : ["a"-"z","A"-"Z","_"] (["a"-"z","A"-"Z","0"-"9","_"])* >
+}
+
+
+/* ---------- punctuation + operators ---------- */
+TOKEN : {
+    < COLON  : ":" >
+  | < SEMI   : ";" >
+  | < LP     : "(" >
+  | < RP     : ")" >
+  | < ASSIGN : "=" >
+  | < PLUS   : "+" >
+  | < MINUS  : "-" >
+  | < MUL    : "*" >
+  | < DIV    : "/" >
+  | < LE     : "<=" >
+  | < GE     : ">=" >
+  | < EQ     : "==" >
+  | < NE     : "<>" >
+  | < LT     : "<" >
+  | < GT     : ">" >
+}
+
+
+/* ==================== GRAMMAR ==================== */
+
+ASTProgram Program() #Program :
+{}
+{
+    <T_START> VarBlock() CodeBlock() <T_END> <EOF>
+    { return jjtThis; }
+}
+
+void VarBlock() #VarBlock :
+{}
+{
+    <T_VARS> <COLON> ( VarDecl() )*
+}
+
+void VarDecl() #VarDecl :
+{
+    Token tType; Token tId; Token tLit;
+}
+{
+    ( tType = <T_INT> | tType = <T_FLOAT_T> | tType = <T_STR_T> | tType = <T_CHAR_T> )
+    tId = <IDENT> <ASSIGN>
+    ( tLit = <INTEGER> | tLit = <FLOATING> | tLit = <STRLIT> | tLit = <CHARLIT> )
+    <SEMI>
+    {
+        Object[] info = new Object[5];
+        info[0] = tType.image;          // declared type (lexeme)
+        info[1] = tId.image;            // identifier
+        info[2] = tLit.image;           // value (as text)
+        info[3] = Integer.valueOf(tLit.kind);
+        info[4] = Integer.valueOf(tId.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+void CodeBlock() #CodeBlock :
+{}
+{
+    <T_CODE> <COLON> ( Stmt() )*
+}
+
+/* Stmt itself is not a node, it just routes to the concrete one */
+void Stmt() #void :
+{}
+{
+      AssignStmt()
+    | LoopStmt()
+    | SwitchStmt()
+    | OutStmt()
+}
+
+void AssignStmt() #AssignStmt :
+{ Token id; }
+{
+    id = <IDENT> <ASSIGN> Expr() <SEMI>
+    {
+        Object[] info = new Object[2];
+        info[0] = id.image;
+        info[1] = Integer.valueOf(id.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+void OutStmt() #OutStmt :
+{ Token t; }
+{
+    t = <T_OUTSTRING> <LP> Expr() <RP> <SEMI>
+    {
+        Object[] info = new Object[1];
+        info[0] = Integer.valueOf(t.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+/* loopif <cond> holds <stmts> endloop
+   per spec: cannot contain another loopif or switchFor */
+void LoopStmt() #LoopStmt :
+{ Token t; }
+{
+    t = <T_LOOPIF> CondExpr() <T_HOLDS>
+        ( AssignStmt() | OutStmt() )+
+    <T_ENDLOOP>
+    {
+        Object[] info = new Object[1];
+        info[0] = Integer.valueOf(t.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+void SwitchStmt() #SwitchStmt :
+{ Token t; Token id; }
+{
+    t = <T_SWITCH> <LP> id = <IDENT> <RP>
+        ( CaseClause() )+
+        <T_OTHER> <COLON> AssignStmt()
+    <T_ENDSWITCH>
+    {
+        Object[] info = new Object[2];
+        info[0] = id.image;
+        info[1] = Integer.valueOf(t.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+void CaseClause() #CaseClause :
+{ Token lit; }
+{
+    <T_CASE>
+    ( lit = <INTEGER> | lit = <FLOATING> | lit = <STRLIT> | lit = <CHARLIT> )
+    <COLON> AssignStmt()
+    {
+        Object[] info = new Object[3];
+        info[0] = lit.image;
+        info[1] = Integer.valueOf(lit.kind);
+        info[2] = Integer.valueOf(lit.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+void CondExpr() #CondExpr :
+{ Token op; }
+{
+    Operand()
+    ( op = <LE> | op = <GE> | op = <EQ> | op = <NE> | op = <LT> | op = <GT> )
+    Operand()
+    {
+        Object[] info = new Object[2];
+        info[0] = op.image;
+        info[1] = Integer.valueOf(op.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+void Operand() #Operand :
+{ Token t; }
+{
+    ( t = <IDENT> | t = <INTEGER> | t = <FLOATING> )
+    {
+        Object[] info = new Object[3];
+        info[0] = t.image;
+        info[1] = Integer.valueOf(t.kind);
+        info[2] = Integer.valueOf(t.beginLine);
+        jjtThis.jjtSetValue(info);
+    }
+}
+
+/* ---- arithmetic ---- */
+void Expr() #Expr :
+{
+    Token op;
+    java.util.List<String> ops = new java.util.ArrayList<String>();
+}
+{
+    Term()
+    ( ( op = <PLUS> | op = <MINUS> ) Term()
+      { ops.add(op.image); }
+    )*
+    { jjtThis.jjtSetValue(ops); }
+}
+
+void Term() #Term :
+{
+    Token op;
+    java.util.List<String> ops = new java.util.ArrayList<String>();
+}
+{
+    Factor()
+    ( ( op = <MUL> | op = <DIV> ) Factor()
+      { ops.add(op.image); }
+    )*
+    { jjtThis.jjtSetValue(ops); }
+}
+
+void Factor() #Factor :
+{ Token t = null; }
+{
+      t = <IDENT>     { Object[] i = { "id",     t.image, Integer.valueOf(t.beginLine) }; jjtThis.jjtSetValue(i); }
+    | t = <INTEGER>   { Object[] i = { "int",    t.image, Integer.valueOf(t.beginLine) }; jjtThis.jjtSetValue(i); }
+    | t = <FLOATING>  { Object[] i = { "float",  t.image, Integer.valueOf(t.beginLine) }; jjtThis.jjtSetValue(i); }
+    | t = <CHARLIT>   { Object[] i = { "char",   t.image, Integer.valueOf(t.beginLine) }; jjtThis.jjtSetValue(i); }
+    | t = <STRLIT>    { Object[] i = { "string", t.image, Integer.valueOf(t.beginLine) }; jjtThis.jjtSetValue(i); }
+    | <LP> Expr() <RP>
+      { Object[] i = { "paren", null, Integer.valueOf(0) }; jjtThis.jjtSetValue(i); }
+}

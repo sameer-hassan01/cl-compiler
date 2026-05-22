@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="clgui.MainController"
+            styleClass="root-pane">
+
+    <top>
+        <ToolBar styleClass="toolbar">
+            <Button text="Compile (F5)"   onAction="#onCompile" styleClass="primary-button" />
+            <Separator orientation="VERTICAL"/>
+            <Button text="Open .cl"       onAction="#onOpen"/>
+            <Button text="Save .cl"       onAction="#onSave"/>
+            <Button text="Clear"          onAction="#onClear"/>
+            <Separator orientation="VERTICAL"/>
+            <Label  text="Sample:" />
+            <ComboBox fx:id="sampleSelector" prefWidth="220"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="statusLabel" styleClass="status-label" />
+        </ToolBar>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.42" styleClass="main-split">
+
+            <!-- LEFT: source editor -->
+            <VBox styleClass="editor-pane">
+                <Label text="Source code" styleClass="pane-title"/>
+                <TextArea fx:id="editor"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="code-editor"
+                          wrapText="false"/>
+            </VBox>
+
+            <!-- RIGHT: output tabs -->
+            <VBox styleClass="output-pane">
+                <Label text="Compiler output" styleClass="pane-title"/>
+                <TabPane VBox.vgrow="ALWAYS"
+                         tabClosingPolicy="UNAVAILABLE"
+                         styleClass="output-tabs">
+
+                    <Tab text="Tokens">
+                        <TextArea fx:id="tokensArea"
+                                  editable="false"
+                                  styleClass="code-editor"
+                                  wrapText="false"/>
+                    </Tab>
+
+                    <Tab text="AST">
+                        <TextArea fx:id="astArea"
+                                  editable="false"
+                                  styleClass="code-editor"
+                                  wrapText="false"/>
+                    </Tab>
+
+                    <Tab text="Symbol Table">
+                        <TableView fx:id="symbolTable" styleClass="data-table">
+                            <columns>
+                                <TableColumn fx:id="colSymLex"   text="Lexeme" prefWidth="160"/>
+                                <TableColumn fx:id="colSymType"  text="Type"   prefWidth="100"/>
+                                <TableColumn fx:id="colSymValue" text="Value"  prefWidth="200"/>
+                                <TableColumn fx:id="colSymLine"  text="Line"   prefWidth="80"/>
+                            </columns>
+                        </TableView>
+                    </Tab>
+
+                    <Tab text="Errors">
+                        <TextArea fx:id="errorsArea"
+                                  editable="false"
+                                  styleClass="errors-area"
+                                  wrapText="true"/>
+                    </Tab>
+
+                    <Tab text="Quadruples">
+                        <TableView fx:id="quadTable" styleClass="data-table">
+                            <columns>
+                                <TableColumn fx:id="colQuadNo"     text="#"      prefWidth="50"/>
+                                <TableColumn fx:id="colQuadOp"     text="Op"     prefWidth="80"/>
+                                <TableColumn fx:id="colQuadArg1"   text="Arg1"   prefWidth="120"/>
+                                <TableColumn fx:id="colQuadArg2"   text="Arg2"   prefWidth="120"/>
+                                <TableColumn fx:id="colQuadResult" text="Result" prefWidth="120"/>
+                            </columns>
+                        </TableView>
+                    </Tab>
+
+                    <Tab text="TAC (statement form)">
+                        <TextArea fx:id="tacArea"
+                                  editable="false"
+                                  styleClass="code-editor"
+                                  wrapText="false"/>
+                    </Tab>
+
+                </TabPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,181 @@
+/* ----------------------------------------------------------
+   CL Compiler -- JavaFX stylesheet
+   Dark code-editor inspired theme.
+   ---------------------------------------------------------- */
+
+.root-pane {
+    -fx-background-color: #1e1f29;
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+    -fx-text-fill: #e6e6f0;
+}
+
+.toolbar {
+    -fx-background-color: #282a36;
+    -fx-border-color: transparent transparent #44475a transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 6 10 6 10;
+    -fx-spacing: 6;
+}
+
+.toolbar .label {
+    -fx-text-fill: #c9c9d6;
+    -fx-font-size: 12px;
+}
+
+.toolbar .button {
+    -fx-background-color: #383a4a;
+    -fx-text-fill: #e6e6f0;
+    -fx-background-radius: 4;
+    -fx-padding: 4 12 4 12;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+.toolbar .button:hover  { -fx-background-color: #444657; }
+.toolbar .button:pressed{ -fx-background-color: #555770; }
+
+.primary-button {
+    -fx-background-color: #50fa7b;
+    -fx-text-fill: #1e1f29;
+    -fx-font-weight: bold;
+}
+.primary-button:hover   { -fx-background-color: #7afca0; }
+.primary-button:pressed { -fx-background-color: #3edd6a; }
+
+.status-label {
+    -fx-text-fill: #8be9fd;
+    -fx-font-size: 12px;
+    -fx-padding: 0 8 0 0;
+    -fx-font-style: italic;
+}
+
+.main-split {
+    -fx-background-color: #1e1f29;
+    -fx-padding: 0;
+}
+.main-split > .split-pane-divider {
+    -fx-background-color: #44475a;
+    -fx-padding: 0 1 0 1;
+}
+
+.editor-pane, .output-pane {
+    -fx-background-color: #1e1f29;
+    -fx-padding: 8;
+}
+
+.pane-title {
+    -fx-text-fill: #bd93f9;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 6 4;
+}
+
+/* shared "code editor" look for monospace text panels */
+.code-editor {
+    -fx-font-family: "Cascadia Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-text-fill: #f8f8f2;
+    -fx-control-inner-background: #282a36;
+    -fx-background-color: #282a36;
+    -fx-background-radius: 4;
+    -fx-border-color: #44475a;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+}
+.code-editor .content { -fx-background-color: #282a36; }
+
+.errors-area {
+    -fx-font-family: "Cascadia Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-text-fill: #ff5555;
+    -fx-control-inner-background: #2b2229;
+    -fx-background-color: #2b2229;
+    -fx-background-radius: 4;
+    -fx-border-color: #ff5555;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+}
+.errors-area .content { -fx-background-color: #2b2229; }
+
+/* tab strip */
+.output-tabs > .tab-header-area > .tab-header-background {
+    -fx-background-color: #1e1f29;
+}
+.output-tabs .tab {
+    -fx-background-color: transparent;
+    -fx-padding: 6 14 6 14;
+}
+.output-tabs .tab .tab-label {
+    -fx-text-fill: #6272a4;
+    -fx-font-size: 12px;
+}
+.output-tabs .tab:selected .tab-label {
+    -fx-text-fill: #f8f8f2;
+}
+.output-tabs .tab:selected {
+    -fx-background-color: #282a36;
+    -fx-background-radius: 4 4 0 0;
+}
+
+/* table view */
+.data-table {
+    -fx-background-color: #282a36;
+    -fx-border-color: #44475a;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-table-cell-border-color: transparent;
+}
+.data-table .column-header-background { -fx-background-color: #383a4a; }
+.data-table .column-header,
+.data-table .filler {
+    -fx-background-color: #383a4a;
+    -fx-border-color: transparent;
+}
+.data-table .column-header .label {
+    -fx-text-fill: #bd93f9;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+.data-table .table-row-cell {
+    -fx-background-color: #282a36;
+    -fx-text-fill: #f8f8f2;
+    -fx-border-color: transparent transparent #2f3140 transparent;
+}
+.data-table .table-row-cell:odd { -fx-background-color: #2d2f3d; }
+.data-table .table-row-cell:selected,
+.data-table .table-row-cell:filled:selected:focused {
+    -fx-background-color: #44475a;
+    -fx-text-fill: #f8f8f2;
+}
+.data-table .table-cell {
+    -fx-text-fill: #f8f8f2;
+    -fx-font-family: "Cascadia Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 12px;
+    -fx-padding: 6 10 6 10;
+}
+
+/* combo box */
+.combo-box-base {
+    -fx-background-color: #383a4a;
+    -fx-text-fill: #e6e6f0;
+    -fx-background-radius: 4;
+}
+.combo-box-base .list-cell {
+    -fx-text-fill: #e6e6f0;
+    -fx-background-color: #383a4a;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: #282a36;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #44475a;
+}
+
+/* scroll bars */
+.scroll-bar {
+    -fx-background-color: #1e1f29;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #44475a;
+    -fx-background-radius: 4;
+}
+.scroll-bar .thumb:hover { -fx-background-color: #6272a4; }

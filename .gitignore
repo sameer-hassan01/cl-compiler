@@ -1,0 +1,35 @@
+# --- Java / Maven ---
+target/
+*.class
+
+# --- LaTeX build artefacts ---
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.lof
+report/*.lot
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+nbproject/private/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- local agent / scratch ---
+.claude/
+
+# --- submission artefacts (rebuilt on demand, not source) ---
+ProjectCC.zip
+*.zip
